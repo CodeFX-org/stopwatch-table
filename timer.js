@@ -1,4 +1,15 @@
+document.teams = {
+	"Team 1" : "123456789012",
+	"Team 2" : "012345678901",
+	"Team 3" : "901234567890",
+}
 document.globalState = {}
+
+window.onload = function () {
+	prepareStopwatch();
+	prepareDropdown();
+	initialize()
+}
 
 window.addEventListener("message", receiveEvent, false);
 function receiveEvent(message) {
@@ -32,14 +43,14 @@ function receiveEvent(message) {
 			updateCodeFieldStatus(code)
 			updateSubmitStatus(document.globalState.selectedTeam, code)
 			if (code.length == 12)
-				postEvent("codeCompleted");
-		case "codeComplete":
+				postEvent("	codeCompleted");
+		case "	codeCompleted":
 			selectSubmit();
 			break;
 		case "submitted":
+			submit();
 			document.getElementById("code-field").value = "";
 			postEvent("teamSelected", null);
-			selectSubmit();
 			break;
 	}
 }
@@ -66,11 +77,25 @@ function codeEdited(element) {
 	postEvent("codeEdited", element.value)
 }
 
-function submit() {
+function submitted() {
 	postEvent("submitted")
 }
 
 /* DROPDOWN */
+
+function prepareDropdown() {
+	var dropdown = document.getElementById("team-selection-content")
+	for (var team in document.teams) {
+		console.log(team)
+		if (document.teams.hasOwnProperty(team)) {
+			var entry = document.createElement("button");
+			entry.classList.add("dropdown", "dropdown-element");
+			entry.onclick = function() { dropdownSelected(this); }
+			entry.innerHTML = team;
+			dropdown.appendChild(entry);
+		}
+	}
+}
 
 function showDropdown() {
 	document.getElementById("team-selection-content").classList.add("show");
@@ -140,17 +165,27 @@ function selectSubmit() {
 	submit.focus();
 }
 
+function submit() {
+	var state = document.globalState;
+	var correctCode = document.teams[state.selectedTeam] == state.code;
+	if (correctCode)
+		console.log(`SUCCESS: ${state.selectedTeam} in ${state.time}`);
+	else
+		console.log(`FAIL: ${state.selectedTeam} in ${state.time}`);
+}
+
 /* INITIALIZE */
 
-postEvent("teamSelected", null)
-
+function initialize() {
+	postEvent("teamSelected", null);
+}
 
 
 
 
 /* STOPWATCH */
 
-window.onload = function () {
+function prepareStopwatch() {
 
 	var minutes = 00;
 	var seconds = 00;
@@ -163,7 +198,7 @@ window.onload = function () {
 
 	buttonStart.onclick = function() {
 		clearInterval(Interval);
-		Interval = setInterval(startTimer, 1000);
+		Interval = setInterval(ticktock, 1000);
 	}
 
 	buttonStop.onclick = function() {
@@ -178,7 +213,7 @@ window.onload = function () {
 		appendSeconds.innerHTML = seconds;
 	}
 
-	function startTimer () {
+	function ticktock () {
 		seconds++;
 		if(seconds < 9){
 			appendSeconds.innerHTML = "0" + seconds;
@@ -196,6 +231,8 @@ window.onload = function () {
 		if (minutes > 9){
 			appendMinutes.innerHTML = minutes;
 		}
+
+		document.globalState.time = minutes + ":" + seconds;
 	}
 
 }
