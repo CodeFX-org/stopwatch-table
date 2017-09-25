@@ -8,9 +8,7 @@
 
 	<h1>Abgabe</h1>
 	<div class="dropdown">
-		<button id="team-selection-button" class="dropdown dropdown-button" onclick="dropdownClicked()">
-			Team auswählen
-		</button>
+		<button id="team-selection-button" class="dropdown dropdown-button timer-element" onclick="dropdownClicked(this)"/></button>
 		<div id="team-selection-content" class="dropdown dropdown-content">
 			<button class="dropdown dropdown-element" onclick="dropdownSelected(this)"></button>
 			<button class="dropdown dropdown-element" onclick="dropdownSelected(this)">Team 1</button>
@@ -18,6 +16,7 @@
 			<button class="dropdown dropdown-element" onclick="dropdownSelected(this)">Team 3</button>
 		</div>
 	</div>
-
+	<input id="code-field" class="code-field timer-element" type="password" maxlength="12" size="18" onKeyUp="codeEdited(this)">
+	<button id="submit" class="timer-element" onclick=submit(this)>Submit</button>
 </body>
 </html>

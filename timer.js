@@ -11,18 +11,35 @@ function receiveEvent(message) {
 			else
 				showDropdown();
 			break;
-		case "dropdownSelected":
-			if (document.globalState.teamSelectionExpanded) {
-				closeDropdown();
-				selectTeam(findTeam(event.content))
-			}
-			break;
-		case "teamSelected":
-			makeEntryEditable(event.content != null)
-			break;
 		case "nonDropdownClicked":
 			if (document.globalState.teamSelectionExpanded)
 				closeDropdown();
+			break;
+		case "dropdownSelected":
+			if (document.globalState.teamSelectionExpanded) {
+				closeDropdown();
+				postEvent("teamSelected", findTeam(event.content));
+			}
+			break;
+		case "teamSelected":
+			var team = event.content;
+			showTeamSelection(team);
+			updateCodeFieldSelection(team);
+			updateSubmitStatus(team, document.globalState.code)
+			break;
+		case "codeEdited":
+			var code = event.content
+			updateCodeFieldStatus(code)
+			updateSubmitStatus(document.globalState.selectedTeam, code)
+			if (code.length == 12)
+				postEvent("codeCompleted");
+		case "codeComplete":
+			selectSubmit();
+			break;
+		case "submitted":
+			document.getElementById("code-field").value = "";
+			postEvent("teamSelected", null);
+			selectSubmit();
 			break;
 	}
 }
@@ -31,7 +48,7 @@ function findTeam(selection) {
 	return selection == "" ? null : selection;
 }
 
-/* CLICK HANDLER */
+/* HTML EVENT HANDLER */
 
 function postEvent(type, content) {
 	window.postMessage({ type: type, content: content }, "*")
@@ -43,6 +60,14 @@ function dropdownClicked() {
 
 function dropdownSelected(element) {
 	postEvent("dropdownSelected", element.innerText);
+}
+
+function codeEdited(element) {
+	postEvent("codeEdited", element.value)
+}
+
+function submit() {
+	postEvent("submitted")
 }
 
 /* DROPDOWN */
@@ -67,16 +92,54 @@ function closeDropdown() {
 	document.globalState.teamSelectionExpanded = false;
 }
 
-function selectTeam(team) {
-	var dropdownText = team == null ? "Team auswählen" : team;
-	document.getElementById("team-selection-button").innerText = dropdownText
+function showTeamSelection(team) {
+	teamSelectionButton = document.getElementById("team-selection-button");
+	if (team) {
+		teamSelectionButton.innerText = team;
+		teamSelectionButton.classList.add("done");
+	} else {
+		teamSelectionButton.innerText = "Team auswählen";
+		teamSelectionButton.classList.remove("done");
+	}
 	document.globalState.selectedTeam = team;
-
-	postEvent("teamSelected", team)
 }
 
 /* ENTRY */
 
-function makeEntryEditable(editable) {
-
+function updateCodeFieldSelection(team) {
+	var codeField = document.getElementById("code-field");
+	if (team) {
+		codeField.disabled = false;
+		codeField.placeholder = "12-stelliger Code";
+		codeField.focus();
+	} else {
+		codeField.disabled = true;
+		codeField.placeholder = "kein Team ausgewählt";
+	}
 }
+
+function updateCodeFieldStatus(code) {
+	var codeField = document.getElementById("code-field");
+	document.globalState.code = code;
+	if (code.length == 12) {
+		codeField.classList.add("done");
+	} else {
+		codeField.classList.remove("done");
+	}
+}
+
+/* SUBMIT */
+
+function updateSubmitStatus(team, code) {
+	var submit = document.getElementById("submit");
+	submit.disabled = !(team && code && code.length == 12);
+}
+
+function selectSubmit() {
+	var submit = document.getElementById("submit");
+	submit.focus();
+}
+
+/* INITIALIZE */
+
+postEvent("teamSelected", null)
