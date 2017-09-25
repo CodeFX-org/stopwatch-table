@@ -6,7 +6,16 @@
 </head>
 <body>
 
-	<h1>Abgabe</h1>
+	<div class="timer-container">
+		<div class="timer">
+			<span id="minutes">00</span>:<span id="seconds">00</span>
+		</div>
+		<div>
+			<button class="small timer-element" id="button-start">Start</button>
+			<button class="small timer-element" id="button-stop">Stop</button>
+			<button class="small timer-element" id="button-reset">Reset</button>
+		</div>
+	</div>
 	<div class="dropdown">
 		<button id="team-selection-button" class="dropdown dropdown-button timer-element" onclick="dropdownClicked(this)"/></button>
 		<div id="team-selection-content" class="dropdown dropdown-content">
