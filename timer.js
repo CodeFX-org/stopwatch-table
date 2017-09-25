@@ -3,7 +3,13 @@ document.teams = {
 	"Team 2" : "012345678901",
 	"Team 3" : "901234567890",
 }
-document.globalState = {}
+
+document.globalState = {
+	"teamSelectionExpanded" : false,
+	"selectedTeam" : null,
+	"code" : null,
+	"time" : "00:00",
+}
 
 window.onload = function () {
 	prepareStopwatch();
@@ -44,19 +50,28 @@ function receiveEvent(message) {
 			updateSubmitStatus(document.globalState.selectedTeam, code)
 			if (code.length == 12)
 				postEvent("	codeCompleted");
-		case "	codeCompleted":
+		case "codeCompleted":
 			selectSubmit();
 			break;
 		case "submitted":
-			submit();
-			document.getElementById("code-field").value = "";
+			var result = createResult();
+			setCodeTo("");
 			postEvent("teamSelected", null);
+			postEvent("newTableEntry", result)
 			break;
+		case "newTableEntry":
+			addTableEntry(event.content);
 	}
 }
 
 function findTeam(selection) {
 	return selection == "" ? null : selection;
+}
+
+function setCodeTo(newCode) {
+	var codeField = document.getElementById("code-field");
+	codeField.value = newCode;
+	codeEdited(codeField);
 }
 
 /* HTML EVENT HANDLER */
@@ -139,7 +154,7 @@ function updateCodeFieldSelection(team) {
 		codeField.focus();
 	} else {
 		codeField.disabled = true;
-		codeField.placeholder = "kein Team ausgewählt";
+		codeField.placeholder = "kein Team";
 	}
 }
 
@@ -165,13 +180,27 @@ function selectSubmit() {
 	submit.focus();
 }
 
-function submit() {
+function createResult() {
 	var state = document.globalState;
-	var correctCode = document.teams[state.selectedTeam] == state.code;
-	if (correctCode)
-		console.log(`SUCCESS: ${state.selectedTeam} in ${state.time}`);
+	return {
+		"team": state.selectedTeam,
+		"success": document.teams[state.selectedTeam] == state.code,
+		"time": state.time,
+	}
+}
+
+/* TABLE */
+
+function addTableEntry(entry) {
+	var row = document.getElementById('result-table').insertRow(-1);
+	if (entry.success)
+		row.classList.add("result-success")
 	else
-		console.log(`FAIL: ${state.selectedTeam} in ${state.time}`);
+		row.classList.add("result-fail")
+
+	row.insertCell(0).innerHTML = entry.team;
+	row.insertCell(1).innerHTML = entry.success ? "✔" : "✘";
+	row.insertCell(2).innerHTML = entry.time;
 }
 
 /* INITIALIZE */
@@ -187,8 +216,8 @@ function initialize() {
 
 function prepareStopwatch() {
 
-	var minutes = 00;
-	var seconds = 00;
+	var minutes = 0;
+	var seconds = 0;
 	var appendMinutes = document.getElementById("minutes")
 	var appendSeconds = document.getElementById("seconds")
 	var buttonStart = document.getElementById('button-start');
@@ -207,32 +236,27 @@ function prepareStopwatch() {
 
 	buttonReset.onclick = function() {
 		clearInterval(Interval);
-		minutes = "00";
-		seconds = "00";
-		appendMinutes.innerHTML = minutes;
-		appendSeconds.innerHTML = seconds;
+		minutes = 0;
+		seconds = 0;
+		showTime();
+	}
+
+	function showTime() {
+		var secondsString = seconds < 9 ? "0" + seconds : seconds;
+		var minutesString = minutes < 9 ? "0" + minutes : minutes;
+
+		appendSeconds.innerHTML = secondsString;
+		appendMinutes.innerHTML = minutesString;
+		document.globalState.time = minutesString + ":" + secondsString;
 	}
 
 	function ticktock () {
 		seconds++;
-		if(seconds < 9){
-			appendSeconds.innerHTML = "0" + seconds;
-		}
-		if (seconds > 9){
-			appendSeconds.innerHTML = seconds;
-		}
-
 		if (seconds > 59) {
 			minutes++;
-			appendMinutes.innerHTML = "0" + minutes;
 			seconds = 0;
-			appendSeconds.innerHTML = "0" + 0;
 		}
-		if (minutes > 9){
-			appendMinutes.innerHTML = minutes;
-		}
-
-		document.globalState.time = minutes + ":" + seconds;
+		showTime();
 	}
 
 }

@@ -17,13 +17,29 @@
 			<button class="small timer-element" id="button-reset">Reset</button>
 		</div>
 	</div>
-	<div class="dropdown">
-		<button id="team-selection-button" class="dropdown dropdown-button timer-element" onclick="dropdownClicked(this)"/></button>
-		<div id="team-selection-content" class="dropdown dropdown-content">
-			<button class="dropdown dropdown-element" onclick="dropdownSelected(this)"></button>
+	<div class="entry-container">
+		<div class="dropdown">
+			<button id="team-selection-button" class="dropdown dropdown-button timer-element" onclick="dropdownClicked(this)"/></button>
+			<div id="team-selection-content" class="dropdown dropdown-content">
+				<button class="dropdown dropdown-element" onclick="dropdownSelected(this)"></button>
+			</div>
 		</div>
+		<input id="code-field" class="code-field timer-element" type="password" maxlength="12" size="18" onKeyUp="codeEdited(this)">
+		<button id="submit" class="timer-element" onclick=submitted(this)>Ok</button>
 	</div>
-	<input id="code-field" class="code-field timer-element" type="password" maxlength="12" size="18" onKeyUp="codeEdited(this)">
-	<button id="submit" class="timer-element" onclick=submitted(this)>Submit</button>
+	<div class="result-container">
+		<table id="result-table" class="result-table">
+			<colgroup>
+				<col class="team-column">
+				<col class="success-column">
+				<col class="time-column">
+			</colgroup>
+			<tr class="result-header">
+				<th>Team</th>
+				<th>Erfolg?</th>
+				<th>Zeit</th>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>

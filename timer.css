@@ -9,7 +9,7 @@ body {
 	color: white;
 	padding: 16px;
 	margin: 12px;
-	font-size: 16px;
+	font-size: 24px;
 	border: none;
 }
 .timer-element:disabled {
@@ -17,7 +17,7 @@ body {
 }
 
 .small {
-	font-size: 12px;
+	font-size: 16px;
 	margin: 5px;
 }
 
@@ -29,13 +29,13 @@ body {
 
 .timer-container {
 	display: block;
-	width: 30%;
+	width: 35%;
 	margin: 0 auto 32px;
 }
 
 .timer {
 	color: #6fbf72;
-	font-size: 72px;
+	font-size: 80px;
 	font-weight: bold;
 	margin: 10px 0 0;
 	display: inline-block;
@@ -86,7 +86,7 @@ body {
 /* CODE */
 
 .code-field {
-	width: 200px;
+	width: 230px;
 }
 
 .code-field::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -98,9 +98,55 @@ body {
 .code-field::-ms-input-placeholder { /* IE 10+ */
 	color: lightgrey;
 }
+
 /* SUBMIT */
 
 #submit {
-	width: 100px;
+	width: 130px;
 	cursor: pointer;
+}
+
+/* TABLE */
+
+#result-table {
+	width: 80%;
+	margin: 32px auto;
+	border-collapse:collapse;
+}
+
+.result-header {
+	color: white;
+	background-color: #3c8c40;
+	font-size: 32px;
+}
+
+.result-header th {
+	font-weight: normal;
+}
+
+th, td {
+	padding: 12px;
+	border-bottom: 1px solid #6fbf72;
+}
+
+.result-table td {
+	color: #3c8c40;
+	font-size: 24px;
+	text-align: center;
+}
+
+.result-fail td {
+	color: #8c403c;
+}
+
+.team-column {
+	width: 50%;
+}
+
+.success-column {
+	width: 20%;
+}
+
+.time-column {
+	width: 30%;
 }
