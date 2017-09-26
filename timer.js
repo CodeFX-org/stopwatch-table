@@ -1,7 +1,7 @@
 document.teams = {
-	"Team 1" : "123456789012",
-	"Team 2" : "012345678901",
-	"Team 3" : "901234567890",
+	"Team 1" : "1234567890ab",
+	"Team 2" : "0123456789ab",
+	"Team 3" : "AB1234567890",
 }
 
 document.globalState = {
@@ -184,7 +184,7 @@ function createResult() {
 	var state = document.globalState;
 	return {
 		"team": state.selectedTeam,
-		"success": document.teams[state.selectedTeam] == state.code,
+		"success": document.teams[state.selectedTeam].toUpperCase() == state.code.toUpperCase(),
 		"time": state.time,
 	}
 }
