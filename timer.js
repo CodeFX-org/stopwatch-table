@@ -1,4 +1,5 @@
 document.configuration = {
+	codeLength : 12,
 	teams : {
 		"Team 1" : "1234567890ab",
 		"Team 2" : "0123456789ab",
@@ -16,6 +17,7 @@ document.globalState = {
 window.onload = function () {
 	prepareStopwatch();
 	prepareDropdown();
+	prepareCodeField();
 	initialize()
 }
 
@@ -50,7 +52,7 @@ function receiveEvent(message) {
 			var code = event.content
 			updateCodeFieldStatus(code)
 			updateSubmitStatus(document.globalState.selectedTeam, code)
-			if (code.length == 12)
+			if (code.length == document.configuration.codeLength)
 				postEvent("	codeCompleted");
 		case "codeCompleted":
 			selectSubmit();
@@ -148,11 +150,16 @@ function showTeamSelection(team) {
 
 /* ENTRY */
 
+function prepareCodeField() {
+	var codeField = document.getElementById("code-field");
+	codeField.maxLength = document.configuration.codeLength;
+}
+
 function updateCodeFieldSelection(team) {
 	var codeField = document.getElementById("code-field");
 	if (team) {
 		codeField.disabled = false;
-		codeField.placeholder = "12-stelliger Code";
+		codeField.placeholder = `${document.configuration.codeLength}-stelliger Code`;
 		codeField.focus();
 	} else {
 		codeField.disabled = true;
@@ -163,7 +170,7 @@ function updateCodeFieldSelection(team) {
 function updateCodeFieldStatus(code) {
 	var codeField = document.getElementById("code-field");
 	document.globalState.code = code;
-	if (code.length == 12) {
+	if (code.length == document.configuration.codeLength) {
 		codeField.classList.add("done");
 	} else {
 		codeField.classList.remove("done");
@@ -174,7 +181,7 @@ function updateCodeFieldStatus(code) {
 
 function updateSubmitStatus(team, code) {
 	var submit = document.getElementById("submit");
-	submit.disabled = !(team && code && code.length == 12);
+	submit.disabled = !(team && code && code.length == document.configuration.codeLength);
 }
 
 function selectSubmit() {
