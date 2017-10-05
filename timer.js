@@ -18,7 +18,7 @@ window.onload = function () {
 	prepareStopwatch();
 	prepareDropdown();
 	prepareCodeField();
-	initialize()
+	initializeState();
 }
 
 window.addEventListener("message", receiveEvent, false);
@@ -148,7 +148,7 @@ function showTeamSelection(team) {
 	document.globalState.selectedTeam = team;
 }
 
-/* ENTRY */
+/* CODE FIELD */
 
 function prepareCodeField() {
 	var codeField = document.getElementById("code-field");
@@ -214,12 +214,9 @@ function addTableEntry(entry) {
 
 /* INITIALIZE */
 
-function initialize() {
+function initializeState() {
 	postEvent("teamSelected", null);
 }
-
-
-
 
 /* STOPWATCH */
 
