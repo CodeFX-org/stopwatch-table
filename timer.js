@@ -1,7 +1,9 @@
-document.teams = {
-	"Team 1" : "1234567890ab",
-	"Team 2" : "0123456789ab",
-	"Team 3" : "AB1234567890",
+document.configuration = {
+	teams : {
+		"Team 1" : "1234567890ab",
+		"Team 2" : "0123456789ab",
+		"Team 3" : "AB1234567890",
+	}
 }
 
 document.globalState = {
@@ -100,9 +102,9 @@ function submitted() {
 
 function prepareDropdown() {
 	var dropdown = document.getElementById("team-selection-content")
-	for (var team in document.teams) {
+	for (var team in document.configuration.teams) {
 		console.log(team)
-		if (document.teams.hasOwnProperty(team)) {
+		if (document.configuration.teams.hasOwnProperty(team)) {
 			var entry = document.createElement("button");
 			entry.classList.add("dropdown", "dropdown-element");
 			entry.onclick = function() { dropdownSelected(this); }
@@ -184,7 +186,7 @@ function createResult() {
 	var state = document.globalState;
 	return {
 		"team": state.selectedTeam,
-		"success": document.teams[state.selectedTeam].toUpperCase() == state.code.toUpperCase(),
+		"success": document.configuration.teams[state.selectedTeam].toUpperCase() == state.code.toUpperCase(),
 		"time": state.time,
 	}
 }
